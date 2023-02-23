@@ -49,6 +49,27 @@ export function ProductsCard() {
     }
   };
 
+  const handleGetDiscount = async () => {
+    setIsLoading(true);
+    console.log('=============handleGetDiscount ok=======================');
+    const response = await fetch("/api/getdicountcodes");
+
+    if (response.ok) {
+      setIsLoading(false);
+
+      console.log('=============response ok=======================');
+      console.log(response);
+      console.log('====================================');
+
+    } else {
+      setIsLoading(false);
+      setToastProps({
+        content: "There was an error creating products",
+        error: true,
+      });
+    }
+  };
+
   return (
     <>
       {toastMarkup}
@@ -75,6 +96,17 @@ export function ProductsCard() {
             </DisplayText>
           </Heading>
         </TextContainer>
+      </Card>
+
+      <Card
+        title="Load discounts"
+        sectioned
+        primaryFooterAction={{
+          content: "Load discounts",
+          onAction: handleGetDiscount,
+          loading: isLoading,
+        }}
+      >
       </Card>
     </>
   );
