@@ -18,17 +18,20 @@ import {
   useSessionToken,
   useExtensionApi
 } from '@shopify/checkout-ui-extensions-react';
-import RewardFromOrder from './Box/RewardFromOrderBox';
-import ApplyDiscountBox from './Box/ApplyDiscountBox';
+import RewardFromOrder from './Box/RewardFromOrderBox.jsx';
+import ApplyDiscountBox from './Box/ApplyDiscountBox.jsx';
 
-
-render('Checkout::Reductions::RenderAfter', () => (
-  <ApplyDiscountBox />
-));
 
 
 render('Checkout::Dynamic::Render', () => (
-  <RewardFromOrder />
+  // <RewardFromOrder />
+  <ApplyDiscountBox />
+
 ));
+
+// render('Checkout::Reductions::RenderAfter', () => (
+//   <ApplyDiscountBox />
+// ));
+
 
 

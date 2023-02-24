@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 
 import {
     render,
@@ -34,7 +35,6 @@ export default function RewardFromOrder() {
 
     return (
         <View border="base" padding="base">
-
             <Heading>Use our Loyalty program for getting Discount</Heading>
             <Heading>Total Points you will get from this order: {userTotalAmount?.amount}</Heading>
             <Heading>Value of your tokens: {userTotalAmount?.currencyCode}{tokenUserWillGet / 4}</Heading>

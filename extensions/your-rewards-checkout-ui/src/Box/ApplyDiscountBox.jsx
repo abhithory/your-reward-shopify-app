@@ -23,17 +23,22 @@ import CallApi from '../helper/ApiCalls';
 
 export default function ApplyDiscountBox() {
   const applyCoponCode = useApplyDiscountCodeChange(); // apply discount copons
+  const sessionToken = useSessionToken();
 
 
   const applyDiscountCode = async function () {
+    const access_token = await sessionToken.get()
 
-    const discountCoponsData  = await CallApi("/api/getDiscountCopons", "POST");
-
-    console.log("discountCoponsData");
-    console.log(discountCoponsData);
-    // CallApi("/api/createDiscountCopon")
-    // const disocuntToken = "YXG022NQJKB2";
-    // console.log(await applyCoponCode({ type: "addDiscountCode", code: disocuntToken }));
+    // const discountCoponsData  = await CallApi("/api/getDiscountCopons", "GET",access_token);
+    const body = {
+      customer:"usermeail", 
+      discountAmount:55
+    }
+    const copounGeneratedData  = await CallApi("/api/createDiscountCopon", "POST",access_token,body);
+    console.log("discountCoponsData new");
+    const generatedCoponCode = copounGeneratedData.data.codeDiscountNode.codeDiscount.codes.nodes[0].code;
+    console.log(generatedCoponCode);
+    await applyCoponCode({ type: "addDiscountCode", code: generatedCoponCode });
   }
 
   return (

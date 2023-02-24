@@ -4,29 +4,25 @@ import {
 
 
 
-export default async function CallApi(urlEndpoint = "/api/getdicountcodes", method = "GET", body) {
+export default async function CallApi(urlEndpoint = "/api/getdicountcodes", method = "GET",access_token, body) {
     console.log('===============data fetching from apps backend=====/api/getdicountcodes================');
-    const sessionToken = useSessionToken();
-    const access_token = await sessionToken.get()
-    const baseUrl = "https://250e-2405-204-348f-897f-89ff-2da3-fc07-c027.in.ngrok.io";
+    const baseUrl = "https://f51f-2405-204-348f-897f-9040-d530-eeb2-3723.in.ngrok.io/";
     const finalURL = `${baseUrl}${urlEndpoint}`
     const response = await fetch(finalURL, {
         method,
         headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "skip",
-            // 'Authorization': `Bearer ${access_token}`
-        }
+            'Authorization': `Bearer ${access_token}`
+        },
+        body:JSON.stringify(body?body:{})
     },
-        body
     );
     if (response.ok) {
-        console.log(response);
         const data = await response.json();
-        console.log(data);
+        return data;
     } else {
         console.log(error);
         throw new Error("Error while featching data from app's  backend");
     }
-    return data;
 }
