@@ -58,7 +58,7 @@ export function ProductsCard() {
       setIsLoading(false);
 
       console.log('=============response ok=======================');
-      console.log(response);
+      console.log(await response.json());
       console.log('====================================');
 
     } else {

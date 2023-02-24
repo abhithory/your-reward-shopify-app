@@ -2,6 +2,8 @@
 import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
+// const cors = require('cors');
+import cors from "cors";
 import serveStatic from "serve-static";
 
 import shopify from "./shopify.js";
@@ -17,7 +19,20 @@ const STATIC_PATH =
 
 const app = express();
 
+app.use(cors())
+
+
+app.get("/customapi/test", async (_req, res) => {
+
+  console.log("hi hi");
+  res.status(200).send({
+    "data":"discounts.body.data"
+  });
+});
+
+
 // Set up Shopify authentication and webhook handling
+
 app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
   shopify.config.auth.callbackPath,
@@ -33,6 +48,13 @@ app.post(
 app.use("/api/*", shopify.validateAuthenticatedSession());
 
 app.use(express.json());
+
+app.get("/customapi/test", async (_req, res) => {
+
+  res.status(200).send({
+    "data":"discounts.body.data"
+  });
+});
 
 const DISCOUNTS_QUERY = `
   query discounts($first: Int!) {
@@ -91,18 +113,16 @@ app.get("/api/getdicountcodes", async (_req, res) => {
     },
   });
 
-  console.log('=================discounts===================');
-  console.log(discounts);
-  console.log('====================================');
-
-
   res.status(200).send({
-    "data":"sucess reques"
+    "data":discounts.body.data
   });
 });
 
 
+
+
 app.get("/api/products/count", async (_req, res) => {
+
   const countData = await shopify.api.rest.Product.count({
     session: res.locals.shopify.session,
   });
