@@ -2,7 +2,9 @@ type = "checkout_ui_extension"
 name = "your-rewards-checkout-ui"
 
 extension_points = [
-  'Checkout::Dynamic::Render'
+  'Checkout::Dynamic::Render',
+  'Checkout::Reductions::RenderAfter',
+  'Checkout::Reductions::RenderBefore'
 ]
 
 [capabilities]
