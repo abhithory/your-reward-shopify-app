@@ -30,7 +30,7 @@ function App() {
       method:"GET",
       headers:{
           "Content-Type": "application/json",
-          "ngrok-skip-browser-warning":"skip"
+          "ngrok-skip-browser-warning":"skip",
           // 'Authorization': `Bearer ${access_token}`
       }
     })

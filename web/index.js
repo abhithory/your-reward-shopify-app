@@ -9,6 +9,7 @@ import serveStatic from "serve-static";
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
+import router from "./routes/index.js";
 
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 
@@ -37,82 +38,16 @@ app.post(
 
 // All endpoints after this point will require an active session
 app.use("/api/*", shopify.validateAuthenticatedSession());
-
 app.use(express.json());
-
-
-const DISCOUNTS_QUERY = `
-  query discounts($first: Int!) {
-    codeDiscountNodes(first: $first) {
-      edges {
-        node {
-          id
-          codeDiscount {
-            ... on DiscountCodeBasic {
-              codes(first: 1) {
-                edges {
-                  node {
-                    code
-                  }
-                }
-              }
-            }
-            ... on DiscountCodeBxgy {
-              codes(first: 1) {
-                edges {
-                  node {
-                    code
-                  }
-                }
-              }
-            }
-            ... on DiscountCodeFreeShipping {
-              codes(first: 1) {
-                edges {
-                  node {
-                    code
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-
-app.get("/api/getdicountcodes", async (_req, res) => {
-  const client = new shopify.api.clients.Graphql({
-    session: res.locals.shopify.session,
-  });
-
-  /* Fetch all available discounts to list in the QR code form */
-  const discounts = await client.query({
-    data: {
-      query: DISCOUNTS_QUERY,
-      variables: {
-        first: 25,
-      },
-    },
-  });
-
-  res.status(200).send({
-    "data":discounts.body.data
-  });
-});
-
-
-
+app.use(router);
 
 app.get("/api/products/count", async (_req, res) => {
-
   const countData = await shopify.api.rest.Product.count({
     session: res.locals.shopify.session,
   });
   res.status(200).send(countData);
 });
+
 
 app.get("/api/products/create", async (_req, res) => {
   let status = 200;
