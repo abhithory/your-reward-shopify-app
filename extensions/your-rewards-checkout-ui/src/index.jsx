@@ -23,15 +23,14 @@ function App() {
     const access_token = await sessionToken.get()
     console.log(access_token);
 
-    const baseUrl = "https://eeab-2409-4050-2d9f-9a98-b592-1a65-19db-1529.in.ngrok.io"
-    const getToken = `${baseUrl}/api/getdicountcodes`
-    const getDemo = `${baseUrl}/customapi/test`
-    const getWithServer = "https://localhost:3000/getcopons";
+    const baseUrl = "https://250e-2405-204-348f-897f-89ff-2da3-fc07-c027.in.ngrok.io"
+    const getDiscounts = `${baseUrl}/api/getdicountcodes`
 
-    const data = await fetch(getWithServer,{
+    const data = await fetch(getDiscounts,{
       method:"GET",
       headers:{
           "Content-Type": "application/json",
+          "ngrok-skip-browser-warning":"skip"
           // 'Authorization': `Bearer ${access_token}`
       }
     })

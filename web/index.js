@@ -22,15 +22,6 @@ const app = express();
 app.use(cors())
 
 
-app.get("/customapi/test", async (_req, res) => {
-
-  console.log("hi hi");
-  res.status(200).send({
-    "data":"discounts.body.data"
-  });
-});
-
-
 // Set up Shopify authentication and webhook handling
 
 app.get(shopify.config.auth.path, shopify.auth.begin());
@@ -49,12 +40,6 @@ app.use("/api/*", shopify.validateAuthenticatedSession());
 
 app.use(express.json());
 
-app.get("/customapi/test", async (_req, res) => {
-
-  res.status(200).send({
-    "data":"discounts.body.data"
-  });
-});
 
 const DISCOUNTS_QUERY = `
   query discounts($first: Int!) {

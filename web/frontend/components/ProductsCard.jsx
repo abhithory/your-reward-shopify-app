@@ -52,6 +52,7 @@ export function ProductsCard() {
   const handleGetDiscount = async () => {
     setIsLoading(true);
     console.log('=============handleGetDiscount ok=======================');
+    
     const response = await fetch("/api/getdicountcodes");
 
     if (response.ok) {
