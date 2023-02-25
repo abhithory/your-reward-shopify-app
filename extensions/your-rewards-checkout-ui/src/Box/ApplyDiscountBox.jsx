@@ -24,9 +24,8 @@ import { CallApiFromShopifyApp, CallApiYourTokenServer } from '../helper/ApiCall
 
 export default function ApplyDiscountBox() {
   const [loadingData, setLoadingData] = useState(true);
-  const [storeCompleteDetail, setStoreCompleteDetail] = useState(null); // store app backend url, loyalty program details (value, total points, )
-  const [userDetails, setUserDetails] = useState(null); // user loyalty points, (any unused copons that is generated);
-  const [isLogin, setIsLogin] = useState(true);
+  const [userStoreDetails, setUserStoreDetails] = useState(null)
+  const [isLoginModel, setIsLoginModel] = useState(true);
   const shopeinfo = useShop(); // store details - domain, name
 
 
@@ -50,18 +49,28 @@ export default function ApplyDiscountBox() {
     await applyCoponCode({ type: "addDiscountCode", code: generatedCoponCode });
   }
 
-
-  const loadUserDetails = async function () {
-
-  }
-
-  const loadStoreDetails = async function () {
-    // await CallApiYourTokenServer
-
-  }
   const loadDetails = async function () {
-    await loadStoreDetails();
-    await loadUserDetails();
+    setLoadingData(true)
+    // await CallApiYourTokenServer
+    const response = {
+      isUserLogin: false,
+      userTotalTokens: 1200,
+      isStoreConnected: true,
+      percentTokenUserGetFromOrderAmount: 15,
+      maxTokensUserCanGetFromTransaction: 400,
+      maxTokensCanUseInOneOrder: 600,
+      tokenSymbol: "YT",
+      oneINRfromTokens: 50,
+    };
+    // setTimeout(() => {
+      setLoadingData(false)
+      setUserStoreDetails(response);
+    // }, 1000);
+  }
+
+  async function loginSignup(e){
+    e.preventDefault();
+    
   }
 
   useEffect(() => {
@@ -71,45 +80,49 @@ export default function ApplyDiscountBox() {
 
   return (
     <BlockStack>
-
-      {userDetails ?
-        // user is login
-        <>
-          <Text size="medium">You have 55 YT points</Text>
-          <Button onPress={applyDiscountCode}>
-            Apply Max Discount with Yt Points
-          </Button>
-          <Text size="medium">Cutomize Discount</Text>
-        </>
+      {loadingData ?
+        <Text size="medium">Loading.... add scrollbar</Text>
         :
-        // user not login
-        <Link
-          overlay={
-            <Modal padding title="You are not logined in Your token">
-              <BlockLayout>
-                <Text size="medium">{isLogin ?"Login":"Signup"} in your YourToken account</Text>
-                {!isLogin &&
-                    <TextField type='text' label="Enter your Full Name" />
-                }
+        userStoreDetails?.isStoreConnected &&
+        <>
+          {userStoreDetails?.isUserLogin ?
+            <>
+              <Text size="medium">You  have {userStoreDetails?.userTotalTokens} {userStoreDetails?.tokenSymbol} points</Text>
+              <Button onPress={applyDiscountCode}>
+                Apply Max Discount with {userStoreDetails?.tokenSymbol} Points
+              </Button>
+              <Text size="small">Cutomize Discount</Text>
+            </>
+            :
+            <Link
+              overlay={
+                <Modal padding title="You are not logined in Your token">
+                  <BlockLayout>
+                    <Text size="medium">{isLoginModel ? "Login" : "Signup"} in your YourToken account</Text>
+                    {!isLoginModel &&
+                      <TextField type='text' label="Enter your Full Name" />
+                    }
                     <TextField type='email' label="Enter your email" />
                     <TextField email='password' label="Enter Password" />
-                <Button>
-                {isLogin ?"Login":"Signup"}
-                </Button>
+                    <Button>
+                      {isLoginModel ? "Login" : "Signup"}
+                    </Button>
 
-                <Link onPress={() => setIsLogin(!isLogin)}>
-                  {isLogin ? "Don't Have Your token account" : "Already have your token account"}
-                </Link>
+                    <Link onPress={() => setIsLoginModel(!isLoginModel)}>
+                      {isLoginModel ? "Don't Have Your token account" : "Already have your token account"}
+                    </Link>
 
 
-              </BlockLayout>
-            </Modal>
+                  </BlockLayout>
+                </Modal>
+              }
+            >
+              <Button onPress={applyDiscountCode}>
+                Apply Discount with {userStoreDetails?.tokenSymbol} Points
+              </Button>
+            </Link>
           }
-        >
-          <Button onPress={applyDiscountCode}>
-            Apply Max Discount with Yt Points
-          </Button>
-        </Link>
+        </>
       }
 
     </BlockStack>
