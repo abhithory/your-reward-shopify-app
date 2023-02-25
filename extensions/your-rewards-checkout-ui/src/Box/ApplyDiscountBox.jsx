@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   render,
@@ -19,45 +20,77 @@ import {
   useSessionToken,
   useExtensionApi
 } from '@shopify/checkout-ui-extensions-react';
-import CallApi from '../helper/ApiCalls';
+import { CallApiFromShopifyApp, CallApiYourTokenServer } from '../helper/ApiCalls.js';
 
 export default function ApplyDiscountBox() {
+  const [loadingData, setLoadingData] = useState(true);
+  const [storeCompleteDetail, setStoreCompleteDetail] = useState(null); // store app backend url, loyalty program details (value, total points, )
+  const [userDetails, setUserDetails] = useState(null); // user loyalty points, (any unused copons that is generated)
+
+  const userTotalAmount = useTotalAmount();
   const applyCoponCode = useApplyDiscountCodeChange(); // apply discount copons
   const sessionToken = useSessionToken();
 
 
   const applyDiscountCode = async function () {
+    /// here call yourtoken backend and send access token their and then their call shopify app backend for changing.
+    // for getting backend url -> first setup frontend and their set a system for 
     const access_token = await sessionToken.get()
 
-    // const discountCoponsData  = await CallApi("/api/getDiscountCopons", "GET",access_token);
+    // const discountCoponsData  = await CallApiFromShopifyApp("/api/getDiscountCopons", "GET",access_token);
     const body = {
-      customer:"usermeail", 
-      discountAmount:55
+      customer: "useremail",
+      discountAmount: 55
     }
-    const copounGeneratedData  = await CallApi("/api/createDiscountCopon", "POST",access_token,body);
-    console.log("discountCoponsData new");
+    const copounGeneratedData = await CallApiFromShopifyApp("/api/createDiscountCopon", "POST", access_token, body);
     const generatedCoponCode = copounGeneratedData.data.codeDiscountNode.codeDiscount.codes.nodes[0].code;
-    console.log(generatedCoponCode);
     await applyCoponCode({ type: "addDiscountCode", code: generatedCoponCode });
   }
 
+
+  const loadUserDetails = async function () {
+
+  }
+
+  const loadStoreDetails = async function () {
+    // await CallApiYourTokenServer
+
+  }
+  const loadDetails = async function () {
+    await loadStoreDetails();
+    await loadUserDetails();
+  }
+
+  useEffect(() => {
+    loadDetails();
+  }, [shopeinfo]);
+
+
   return (
     <BlockStack>
-      <Text size="medium">You have 55 YT points</Text>
-      {/* <Link
-        overlay={
-          <Modal padding title="Apply Discount with Loyaly points">
-            <ModelContent />
-          </Modal>
-        }
-      > */}
-      <Button onPress={applyDiscountCode}>
-        Apply Discount with Yt Points
-      </Button>
 
-      <Text size="medium">Cutomize Discount</Text>
+      {userDetails ?
+        // user is login
+        <>
+          <Text size="medium">You have 55 YT points</Text>
+          <Button onPress={applyDiscountCode}>
+            Apply Max Discount with Yt Points
+          </Button>
+          <Text size="medium">Cutomize Discount</Text>
+        </>
+        :
+        // user not login
+        <Link
+          overlay={
+            <Modal padding title="Apply Discount with Loyaly points">
+              <ModelContent />
+            </Modal>
+          }
+        >
+          show popup
+        </Link>
+      }
 
-      {/* </Link> */}
     </BlockStack>
   );
 }
