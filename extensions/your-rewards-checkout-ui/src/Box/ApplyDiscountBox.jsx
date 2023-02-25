@@ -25,7 +25,10 @@ import { CallApiFromShopifyApp, CallApiYourTokenServer } from '../helper/ApiCall
 export default function ApplyDiscountBox() {
   const [loadingData, setLoadingData] = useState(true);
   const [storeCompleteDetail, setStoreCompleteDetail] = useState(null); // store app backend url, loyalty program details (value, total points, )
-  const [userDetails, setUserDetails] = useState(null); // user loyalty points, (any unused copons that is generated)
+  const [userDetails, setUserDetails] = useState(null); // user loyalty points, (any unused copons that is generated);
+  const [isLogin, setIsLogin] = useState(true);
+  const shopeinfo = useShop(); // store details - domain, name
+
 
   const userTotalAmount = useTotalAmount();
   const applyCoponCode = useApplyDiscountCodeChange(); // apply discount copons
@@ -82,12 +85,30 @@ export default function ApplyDiscountBox() {
         // user not login
         <Link
           overlay={
-            <Modal padding title="Apply Discount with Loyaly points">
-              <ModelContent />
+            <Modal padding title="You are not logined in Your token">
+              <BlockLayout>
+                <Text size="medium">{isLogin ?"Login":"Signup"} in your YourToken account</Text>
+                {!isLogin &&
+                    <TextField type='text' label="Enter your Full Name" />
+                }
+                    <TextField type='email' label="Enter your email" />
+                    <TextField email='password' label="Enter Password" />
+                <Button>
+                {isLogin ?"Login":"Signup"}
+                </Button>
+
+                <Link onPress={() => setIsLogin(!isLogin)}>
+                  {isLogin ? "Don't Have Your token account" : "Already have your token account"}
+                </Link>
+
+
+              </BlockLayout>
             </Modal>
           }
         >
-          show popup
+          <Button onPress={applyDiscountCode}>
+            Apply Max Discount with Yt Points
+          </Button>
         </Link>
       }
 

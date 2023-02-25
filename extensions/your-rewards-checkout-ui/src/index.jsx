@@ -24,7 +24,9 @@ import ApplyDiscountBox from './Box/ApplyDiscountBox.jsx';
 
 
 render('Checkout::Dynamic::Render', () => (
-  <RewardFromOrder />  
+  // <RewardFromOrder />  
+  <ApplyDiscountBox />
+
 ));
   
   render('Checkout::Reductions::RenderAfter', () => (
