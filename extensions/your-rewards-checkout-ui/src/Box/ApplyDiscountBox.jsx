@@ -24,8 +24,9 @@ import { CallApiFromShopifyApp, CallApiYourTokenServer } from '../helper/ApiCall
 
 export default function ApplyDiscountBox() {
   const [loadingData, setLoadingData] = useState(true);
-  const [userStoreDetails, setUserStoreDetails] = useState(null)
+  const [userStoreDetails, setUserStoreDetails] = useState(null);
   const [isLoginModel, setIsLoginModel] = useState(true);
+  const [copounApplyed, setCopounApplyed] = useState(false);
   const shopeinfo = useShop(); // store details - domain, name
 
 
@@ -35,18 +36,22 @@ export default function ApplyDiscountBox() {
 
 
   const applyDiscountCode = async function () {
-    /// here call yourtoken backend and send access token their and then their call shopify app backend for changing.
-    // for getting backend url -> first setup frontend and their set a system for 
     const access_token = await sessionToken.get()
+    // const body = {
+    //   orderAmountData: userTotalAmount //{amount,currencycode}
+    // }
 
-    // const discountCoponsData  = await CallApiFromShopifyApp("/api/getDiscountCopons", "GET",access_token);
-    const body = {
-      customer: "useremail",
-      discountAmount: 55
-    }
-    const copounGeneratedData = await CallApiFromShopifyApp("/api/createDiscountCopon", "POST", access_token, body);
-    const generatedCoponCode = copounGeneratedData.data.codeDiscountNode.codeDiscount.codes.nodes[0].code;
-    await applyCoponCode({ type: "addDiscountCode", code: generatedCoponCode });
+    // CallYour token server for getting discount code send access token there and then their call shopify app backend for changing.
+    // for getting backend url -> first setup frontend and their set a system for 
+    // const copounGeneratedData = await CallApiFromShopifyApp("/api/createDiscountCopon", "POST", access_token, body);
+    // const generatedCoponCode = copounGeneratedData.data.codeDiscountNode.codeDiscount.codes.nodes[0].code;
+
+    const generatedCoponCode = "hfkjsdfkjas";
+    const applyDiscountResponse = await applyCoponCode({ type: "addDiscountCode", code: generatedCoponCode });
+    console.log(applyDiscountResponse);
+
+    setCopounApplyed(true);
+    loadDetails();
   }
 
   const loadDetails = async function () {
@@ -63,14 +68,22 @@ export default function ApplyDiscountBox() {
       oneINRfromTokens: 50,
     };
     // setTimeout(() => {
-      setLoadingData(false)
-      setUserStoreDetails(response);
+    setLoadingData(false)
+    setUserStoreDetails(response);
     // }, 1000);
   }
 
-  async function loginSignup(e){
+  async function loginSignup(e) {
     e.preventDefault();
-    
+    if (isLoginModel) {
+      //login
+
+      loadDetails();
+    } else {
+      // signup
+    }
+
+
   }
 
   useEffect(() => {
@@ -88,10 +101,21 @@ export default function ApplyDiscountBox() {
           {userStoreDetails?.isUserLogin ?
             <>
               <Text size="medium">You  have {userStoreDetails?.userTotalTokens} {userStoreDetails?.tokenSymbol} points</Text>
-              <Button onPress={applyDiscountCode}>
-                Apply Max Discount with {userStoreDetails?.tokenSymbol} Points
-              </Button>
-              <Text size="small">Cutomize Discount</Text>
+
+              {copounApplyed ?
+                <>
+                  <Button >
+                    Discount Applyed Succefully
+                  </Button>
+                </>
+                :
+                <>
+                  <Button onPress={applyDiscountCode}>
+                    Apply Max Discount with {userStoreDetails?.tokenSymbol} Points
+                  </Button>
+                  <Text size="small">Cutomize Discount</Text>
+                </>
+              }
             </>
             :
             <Link
@@ -100,10 +124,10 @@ export default function ApplyDiscountBox() {
                   <BlockLayout>
                     <Text size="medium">{isLoginModel ? "Login" : "Signup"} in your YourToken account</Text>
                     {!isLoginModel &&
-                      <TextField type='text' label="Enter your Full Name" />
+                      <TextField type='text' name='fullName' label="Enter your Full Name" />
                     }
-                    <TextField type='email' label="Enter your email" />
-                    <TextField email='password' label="Enter Password" />
+                    <TextField name='email' type='email' label="Enter your email" />
+                    <TextField name='password' email='password' label="Enter Password" />
                     <Button>
                       {isLoginModel ? "Login" : "Signup"}
                     </Button>
