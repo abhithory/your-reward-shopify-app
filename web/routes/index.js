@@ -18,6 +18,13 @@ function makeid(length) {
 }
 
 
+router.get("/api/testing", async (req, res) => {
+    console.log("/api/testing");
+    return res.status(200).json({
+        data: "Succefully called API"
+    });
+});
+
 
 router.get("/api/getDiscountCopons", async (req, res) => {
 
@@ -43,27 +50,19 @@ router.post("/api/createDiscountCopon", async (req, res) => {
 
     console.log("/api/createDiscountCopon");
 
-    const { customer, discountAmount } = req.body;
+    const { discountAmount, discountCode } = req.body;
     const client = new shopify.api.clients.Graphql({
         session: res.locals.shopify.session,
     });
-
     const date = new Date();
-
-    console.log(date.toISOString());
     const variable = {
         "basicCodeDiscount": {
             "usageLimit": 1,
             "appliesOncePerCustomer": true,
             "title": "your reward Discount testing",
-            "code": `YourReward${makeid(8)}`,
+            "code":  discountCode,  // `YourReward${makeid(8)}`,
             "startsAt": date.toISOString(),
             // "endsAt": "2022-09-21T00:00:00Z",
-            // "combinesWith": {
-            //     "orderDiscounts": true,
-            //     "productDiscounts": false,
-            //     "shippingDiscounts": false
-            // },
             "customerSelection": {
                 "all": true,
                 // "customers": {
@@ -73,7 +72,6 @@ router.post("/api/createDiscountCopon", async (req, res) => {
                 // }
             },
             "customerGets": {
-                // "appliesOnOneTimePurchase": true,
                 "value": {
                     "discountAmount": {
                         "amount": Number(discountAmount),
@@ -83,19 +81,9 @@ router.post("/api/createDiscountCopon", async (req, res) => {
                 "items": {
                     "all": true
                 }
-            },
-            "minimumRequirement": {
-                // "quantity": {
-                //   "greaterThanOrEqualToQuantity": "1"
-                // },
-                // "subtotal": {
-                //   "greaterThanOrEqualToSubtotal": 1
-                // }
-              },
+            }
         }
     }
-
-
     try {
         
         const result = await client.query({
@@ -109,12 +97,10 @@ router.post("/api/createDiscountCopon", async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        return res.status(202).json({
+        return res.status(400).json({
             data: error,
         });
     }
-
-})
-
+});
 
 export default router;
