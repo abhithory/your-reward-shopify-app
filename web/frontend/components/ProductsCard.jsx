@@ -49,11 +49,33 @@ export function ProductsCard() {
     }
   };
 
-  const handleGetDiscount = async () => {
+  const handleGetScripttags = async () => {
     setIsLoading(true);
-    console.log('=============handleGetDiscount ok=======================');
+    console.log('=============handleGetScripttags ok=======================');
     
-    const response = await fetch("/api/getdicountcodes");
+    const response = await fetch("/api/getScriptTags");
+
+    if (response.ok) {
+      setIsLoading(false);
+
+      console.log('=============response ok=======================');
+      console.log(await response.json());
+      console.log('====================================');
+
+    } else {
+      setIsLoading(false);
+      setToastProps({
+        content: "There was an error creating products",
+        error: true,
+      });
+    }
+  };
+
+  const handleCreateScripttags = async () => {
+    setIsLoading(true);
+    console.log('=============handleGetScripttags ok=======================');
+    
+    const response = await fetch("/api/getScriptTags");
 
     if (response.ok) {
       setIsLoading(false);
@@ -100,15 +122,29 @@ export function ProductsCard() {
       </Card>
 
       <Card
-        title="Load discounts"
+        title="Load Script tags"
         sectioned
         primaryFooterAction={{
-          content: "Load discounts",
-          onAction: handleGetDiscount,
+          content: "Load Script tags",
+          onAction: handleGetScripttags,
           loading: isLoading,
         }}
       >
       </Card>
+
+
+      <Card
+        title="Create Script tags"
+        sectioned
+        primaryFooterAction={{
+          content: "Create Script tags",
+          onAction: handleCreateScripttags,
+          loading: isLoading,
+        }}
+      >
+      </Card>
+
+
     </>
   );
 }
