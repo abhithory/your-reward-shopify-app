@@ -42,7 +42,7 @@ export default function RewardFromOrder() {
             isUserLogin: true,
             isStoreConnected: true,
             percentTokenUserGetFromOrderAmount: 15,
-            maxTokensUserCanGetFromTransaction: 400,
+            maxTokensPerTransaction: 400,
             oneINRfromTokens: 50,
         };
 
@@ -56,7 +56,7 @@ export default function RewardFromOrder() {
 
         const tokensGet = Math.floor((userTotalAmount?.amount) * details.percentTokenUserGetFromOrderAmount / 100)
 
-        return tokensGet < details.maxTokensUserCanGetFromTransaction ? tokensGet : details.maxTokensUserCanGetFromTransaction;
+        return tokensGet < details.maxTokensPerTransaction ? tokensGet : details.maxTokensPerTransaction;
 
     }
 
