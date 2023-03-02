@@ -11,7 +11,7 @@ import { useAppQuery, useAuthenticatedFetch } from "../hooks";
 
 export function ProductsCard() {
   const emptyToastProps = { content: null };
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [toastProps, setToastProps] = useState(emptyToastProps);
   const fetch = useAuthenticatedFetch();
 
