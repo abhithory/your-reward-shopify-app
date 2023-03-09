@@ -29,28 +29,50 @@ router.get("/api/testing", async (req, res) => {
 });
 
 
-router.get("/api/getScriptTags", async (req, res) => {
-    console.log("/api/getScriptTags");
-    const tags = await shopify.rest.ScriptTag.all({
+router.get("/api/getWebhooks", async (req, res) => {
+    console.log("/api/getWebhooks--------");
+    const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
     });
     return res.status(200).json({
-        data: tags.body.data,
+        data: webhooks,
     });
 });
 
-router.post("/api/createScriptTags", async (req, res) => {
-    console.log("/api/createScriptTags");
+router.post("/api/createWebhook", async (req, res) => {
+    console.log("/api/createWebhook");
 
-    const script_tag = new shopify.rest.ScriptTag({
+    const webhook = new shopify.api.rest.Webhook({
         session: res.locals.shopify.session,
     });
-    script_tag.event = "onload";
-    script_tag.src = "https://cdn.nector.io/nector-static/no-cache/reward-widget/mainloader.min.js";
-    const response = await script_tag.save({
+    webhook.address = "https://yellow-files-stand-157-38-64-239.loca.lt/create";
+    webhook.topic = "orders/paid";
+    webhook.format = "json";
+    const response = await webhook.save({
         update: true,
     });
 
+    console.log("/api/createWebhook end................");
+    return res.status(200).json({
+        data: response,
+    });
+});
+
+router.post("/api/updateWebhook", async (req, res) => {
+    console.log("/api/updateWebhook");
+
+
+    const webhook = new shopify.api.rest.Webhook({
+        session: res.locals.shopify.session,
+     });
+    webhook.id = 1269172011299;
+    webhook.address = "https://xjmdqrvruj.loclx.io/create";
+    const response = await webhook.save({
+        update: true,
+    });
+
+
+    console.log("/api/updateWebhook end................");
     return res.status(200).json({
         data: response,
     });

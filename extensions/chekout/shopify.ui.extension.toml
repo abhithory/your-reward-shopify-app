@@ -1,17 +1,9 @@
 type = "checkout_ui_extension"
-name = "your-rewards-checkout-ui"
+name = "chekout"
 
 extension_points = [
-  'Checkout::Dynamic::Render',
-  'Checkout::Reductions::RenderAfter',
-  'Checkout::Reductions::RenderBefore'
+  'Checkout::Dynamic::Render'
 ]
-
-[capabilities]
-network_access = true
-block_progress = true
-api_access = true
-
 
 # [[metafields]]
 # namespace = "my-namespace"

@@ -1,0 +1,27 @@
+<button is="party-button" id="click-button">
+  <span>Start the party!</span>
+</button>
+
+<style>
+  button[is="party-button"] {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    width: 400px;
+    height: 400px;
+    background-color: wheat;
+    border-radius: 50%;
+    z-index: 100;
+    cursor: pointer;
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Party",
+    "target": "body",
+    "stylesheet": "image-gallery.css",
+    "javascript": "script.js",
+    "settings": []
+  }
+{% endschema %}}}}}}}}}}}
